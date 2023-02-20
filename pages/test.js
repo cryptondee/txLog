@@ -6,11 +6,12 @@ function Test() {
   const [toAddress, setToAddress] = useState();
   const [wsEnabled, setWsEnabled] = useState(false);
   const [text, setText] = useState("not watching");
+  const [checkNetwork, setCheckNetwork] = useState(Network.ARB_MAINNET);
 
   const getTransactions = async () => {
     const config = {
       apiKey: process.env.alchemyApi,
-      network: Network.ARB_MAINNET,
+      network: checkNetwork,
     };
     const alchemy = new Alchemy(config);
 
@@ -39,10 +40,14 @@ function Test() {
 
     getTransactions();
     setText("Watching");
-  }, [toAddress, wsEnabled]);
+  }, [toAddress, wsEnabled, checkNetwork]);
+
   const handleInputChange = (event) => {
     setToAddress(event.target.value);
     setWsEnabled(false);
+  };
+  const handleNetworkChange = (event) => {
+    setCheckNetwork(event.target.value);
   };
 
   const handleSubmit = (event) => {
@@ -52,6 +57,7 @@ function Test() {
 
   return (
     <div>
+      {text} - {checkNetwork}
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="to-address-input">To Address:</label>
@@ -63,7 +69,29 @@ function Test() {
           />
         </div>
       </form>
-
+      <div>
+        <p>Network:</p>
+        <label>
+          <input
+            type="radio"
+            name="network"
+            value={Network.ARB_MAINNET}
+            checked={checkNetwork === Network.ARB_MAINNET}
+            onChange={handleNetworkChange}
+          />
+          ARB Mainnet
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="network"
+            value={Network.ETH_MAINNET}
+            checked={checkNetwork === Network.ETH_MAINNET}
+            onChange={handleNetworkChange}
+          />
+          ETH Mainnet
+        </label>
+      </div>
       {transactions.length > 0 ? (
         transactions.map((tx) => (
           <div key={tx.transaction.hash}>
@@ -74,7 +102,7 @@ function Test() {
           </div>
         ))
       ) : (
-        <p>{text}</p>
+        <p>No tx</p>
       )}
     </div>
   );
