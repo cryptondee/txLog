@@ -1,19 +1,11 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "@next/font/google";
-
 import { Alchemy, Network, AlchemySubscription } from "alchemy-sdk";
 import React, { useState, useEffect } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
-
-export default function Home() {
+function Form() {
   const [transactions, setTransactions] = useState([]);
   const [toAddress, setToAddress] = useState();
   const [wsEnabled, setWsEnabled] = useState(false);
-  const [text, setText] = useState(
-    "not watching, input address and press enter"
-  );
+  const [text, setText] = useState("not watching");
   const [checkNetwork, setCheckNetwork] = useState(Network.ARB_MAINNET);
 
   const getTransactions = async () => {
@@ -64,11 +56,11 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-r from-purple-600 to-blue-600">
+    <div>
       {text} - {checkNetwork}
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="to-address-input">Address to listen to:</label>
+          <label htmlFor="to-address-input">To Address:</label>
           <input
             type="text"
             id="to-address-input"
@@ -99,16 +91,6 @@ export default function Home() {
           />
           ETH Mainnet
         </label>
-        <label>
-          <input
-            type="radio"
-            name="network"
-            value={Network.OPT_MAINNET}
-            checked={checkNetwork === Network.OPT_MAINNET}
-            onChange={handleNetworkChange}
-          />
-          Optimism
-        </label>
       </div>
       {transactions.length > 0 ? (
         transactions.map((tx) => (
@@ -125,3 +107,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Form;
